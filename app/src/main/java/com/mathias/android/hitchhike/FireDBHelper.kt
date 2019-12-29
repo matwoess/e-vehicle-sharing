@@ -185,11 +185,12 @@ class FireDBHelper(map: GoogleMap) {
             .orElse(null)
             ?: return
         Log.i(TAG, "rented = ${vehicles[key]!!.rented}")
-        var drawable = -1
         val vehicle = vehicles[key]!!
+        marker.position = vehicle.latLng()
+        var drawable = -1
         if (vehicle.rented) {
             drawable = if (vehicle.locked) R.drawable.blue_dot else R.drawable.yellow_dot
-            if (vehicle.alarm) drawable = R.drawable.purple_dot
+            if (vehicle.alarm) drawable = R.drawable.pink_dot
         }
         if (drawable != -1) {
             marker.setIcon(BitmapDescriptorFactory.fromResource(drawable))

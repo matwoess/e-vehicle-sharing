@@ -13,6 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mathias.android.hitchhike.ActivityMaps.Companion.fireDBHelper
 import com.mathias.android.hitchhike.ActivityMaps.Companion.geocoder
 import com.mathias.android.hitchhike.FireDBHelper.Companion.vehicles
+import com.mathias.android.hitchhike.IRentVehicle
 import com.mathias.android.hitchhike.R
 import com.mathias.android.hitchhike.model.Vehicle
 
@@ -31,10 +32,13 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
     private lateinit var key: String
     private lateinit var vehicle: Vehicle
 
-    internal fun newInstance(key: String): BottomSheetInfo {
+    private lateinit var listener: IRentVehicle
+
+    internal fun newInstance(key: String, listener: IRentVehicle): BottomSheetInfo {
         return BottomSheetInfo().apply {
             this.key = key
             this.vehicle = vehicles[key]!!
+            this.listener = listener
         }
     }
 
@@ -63,7 +67,7 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
         txtCharge.text = String.format("%s%s", vehicle.charge.toString(), "%")
         val spec = vehicle.specifications
         txtSpecifications.text = String.format(
-            "{l: %.2f, w: %.2f, h: %.2f}, weight: %.2f",
+            "Length: %.2f m \nWidth: %.2f m \nHeight: %.2f m \nWeight: %.2f kg",
             spec.length,
             spec.width,
             spec.height,
@@ -80,10 +84,11 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
 
     private fun updateUI() {
         btnRent.text = if (!vehicle.rented) "Rent" else "Finish"
-        btnUnlock.isEnabled = vehicle.locked
-        btnLock.isEnabled = !vehicle.locked
+        btnRent.isEnabled = vehicle.locked
+        btnUnlock.isEnabled = vehicle.locked && vehicle.rented
+        btnLock.isEnabled = !vehicle.locked && vehicle.rented
         btnAlarm.text = if (vehicle.alarm) "Cancel" else "Alarm"
-        btnAlarm.isEnabled = vehicle.rented
+        btnAlarm.isEnabled = vehicle.rented && vehicle.rented
     }
 
     private fun initButtons(view: View) {
@@ -109,6 +114,7 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
     private fun rentVehicle() {
         vehicle.rented = true
         fireDBHelper.updateVehicle(key, vehicle)
+        listener.onVehicleRented(key)
         updateUI()
     }
 
@@ -149,6 +155,7 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
         vehicle.locked = true
         vehicle.alarm = false
         fireDBHelper.updateVehicle(key, vehicle)
+        listener.onVehicleReleased(key)
         this.dismiss()
     }
 

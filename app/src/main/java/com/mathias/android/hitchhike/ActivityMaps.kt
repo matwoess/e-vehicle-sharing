@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -20,16 +21,19 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mathias.android.hitchhike.FireDBHelper.Companion.markers
 import com.mathias.android.hitchhike.FireDBHelper.Companion.vehicleTypes
 import com.mathias.android.hitchhike.sheets.BottomSheetInfo
 import java.util.*
 
-class ActivityMaps : AppCompatActivity(), OnMapReadyCallback {
+class ActivityMaps : AppCompatActivity(), OnMapReadyCallback, IRentVehicle {
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
+    private lateinit var fabInfo: FloatingActionButton
+    private var currentVehicle: String? = null
     private var requestingLocationUpdates: Boolean = true
     private var lastLocation: LatLng? = null
 
@@ -39,6 +43,8 @@ class ActivityMaps : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_maps)
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        fabInfo = findViewById(R.id.fab_info)
+        fabInfo.setOnClickListener { showInfo() }
         // for location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         geocoder = Geocoder(applicationContext, Locale.getDefault())
@@ -128,8 +134,12 @@ class ActivityMaps : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showBottomSheet(key: String) {
-        val sheet = BottomSheetInfo().newInstance(key)
+        val sheet = BottomSheetInfo().newInstance(key, this)
         sheet.show(this.supportFragmentManager, "Vehicle Info")
+    }
+
+    private fun showInfo() {
+        showBottomSheet(currentVehicle!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -184,5 +194,17 @@ class ActivityMaps : AppCompatActivity(), OnMapReadyCallback {
 
         private const val REQUEST_PERM_LOCATION = 100
         private const val REQUESTING_LOCATION_UPDATES_KEY = "req-loc-upd"
+    }
+
+    override fun onVehicleRented(key: String) {
+        currentVehicle = key
+        fabInfo.isVisible = true
+        markers.keys.forEach { m -> if (m.tag != key) m.isVisible = false }
+    }
+
+    override fun onVehicleReleased(key: String) {
+        currentVehicle = null
+        fabInfo.isVisible = false
+        markers.keys.forEach { m -> m.isVisible = true }
     }
 }

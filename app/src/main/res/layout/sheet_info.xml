@@ -12,7 +12,6 @@
         android:id="@+id/grp_lbl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/grp_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -112,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txt_location"
             android:padding="8dp"
-            android:text="{l: 1.0, w 1.0, h 1.0}, weight 1.0"
+            android:text="Length: 3.3 m \nWidth 1.2 m \nHeight 0.9 cm \nWeight 500.0 kg"
             android:textAlignment="textStart"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -124,7 +123,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/grp_lbl">
+        app:layout_constraintTop_toBottomOf="@id/grp_txt">
 
         <Button
             android:id="@+id/btn_rent"

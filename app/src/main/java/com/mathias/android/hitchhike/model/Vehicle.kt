@@ -33,9 +33,13 @@ class Vehicle {
 
     fun updateValues(c: Vehicle) {
         this.type = c.type
-        this.location = c.location
+        this.specifications = c.specifications
         this.description = c.description
         this.charge = c.charge
+        this.location = c.location
+        this.rented = c.rented
+        this.locked = c.locked
+        this.alarm = c.alarm
     }
 
     override fun toString(): String {
