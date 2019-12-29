@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "371753820555",
+    "firebase_url": "https://inspiring-team-257815.firebaseio.com",
+    "project_id": "inspiring-team-257815",
+    "storage_bucket": "inspiring-team-257815.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371753820555:android:c831ec82ffb46b76578f8e",
+        "android_client_info": {
+          "package_name": "com.mathias.android.carcass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371753820555-05405jm4ton5vop02s1vdqv1kf6n7d3c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtzbnO8A-U_S6lxmnpZiyIZvLzxvvxK-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371753820555-05405jm4ton5vop02s1vdqv1kf6n7d3c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
