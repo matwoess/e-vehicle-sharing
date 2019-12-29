@@ -17,6 +17,7 @@ import com.mathias.android.hitchhike.ActivityMaps.Companion.geocoder
 import com.mathias.android.hitchhike.FireDBHelper.Companion.vehicles
 import com.mathias.android.hitchhike.R
 import com.mathias.android.hitchhike.model.Vehicle
+import java.text.DecimalFormat
 
 
 class BottomSheetInfo : BottomSheetDialogFragment() {
@@ -24,6 +25,7 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
     private lateinit var txtDescription: TextView
     private lateinit var txtCharge: TextView
     private lateinit var txtLocation: TextView
+    private lateinit var txtSpecifications: TextView
     private lateinit var btnRent: Button
     private lateinit var btnUnlock: Button
     private lateinit var btnLock: Button
@@ -58,10 +60,19 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
         txtDescription = view.findViewById(R.id.txt_description)
         txtCharge = view.findViewById(R.id.txt_charge)
         txtLocation = view.findViewById(R.id.txt_location)
-        btnRent = view.findViewById(R.id.btn_rent)
+        txtSpecifications = view.findViewById(R.id.txt_specifications)
         txtType.text = vehicle.type?.name
         txtDescription.text = vehicle.description
-        txtCharge.text = String.format("%s%s",vehicle.charge.toString(), "%")
+        txtCharge.text = String.format("%s%s", vehicle.charge.toString(), "%")
+        val spec = vehicle.specifications
+        val df = DecimalFormat("#.##")
+        txtSpecifications.text = String.format(
+            "{l: %.2f, w: %.2f, h: %.2f}, weight: %.2f",
+            spec.length,
+            spec.width,
+            spec.height,
+            spec.weight
+        )
         Log.i(TAG, geocoder.toString())
         val addresses: List<Address> = geocoder.getFromLocation(
             vehicle.location.lat,
@@ -80,6 +91,7 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
     }
 
     private fun initButtons(view: View) {
+        btnRent = view.findViewById(R.id.btn_rent)
         btnLock = view.findViewById(R.id.btn_lock)
         btnUnlock = view.findViewById(R.id.btn_unlock)
         btnAlarm = view.findViewById(R.id.btn_alarm)

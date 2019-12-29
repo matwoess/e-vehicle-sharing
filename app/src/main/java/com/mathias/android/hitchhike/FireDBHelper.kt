@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.database.*
-import com.mathias.android.hitchhike.model.Size
+import com.mathias.android.hitchhike.model.Specifications
 import com.mathias.android.hitchhike.model.VehicleType
 import com.mathias.android.hitchhike.model.Vehicle
 import java.util.*
@@ -92,7 +92,7 @@ class FireDBHelper(map: GoogleMap) {
                     userPos.longitude + addLng
                 )
                 val type = vehicleTypes.values.elementAt(j - 1)
-                val size = Size(1.0f, 1.0f, 1.0f)
+                val size = Specifications(1.0f, 1.0f, 1.0f, 1.0f)
                 val v = Vehicle(type, size, "an ${type.name}", rand.nextInt(100), loc)
                 val ref = pushVehicle(v)
             }
@@ -185,8 +185,14 @@ class FireDBHelper(map: GoogleMap) {
             .orElse(null)
             ?: return
         Log.i(TAG, "rented = ${vehicles[key]!!.rented}")
-        if (vehicles[key]!!.rented) {
-            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_dot))
+        var drawable = -1
+        val vehicle = vehicles[key]!!
+        if (vehicle.rented) {
+            drawable = if (vehicle.locked) R.drawable.blue_dot else R.drawable.yellow_dot
+            if (vehicle.alarm) drawable = R.drawable.purple_dot
+        }
+        if (drawable != -1) {
+            marker.setIcon(BitmapDescriptorFactory.fromResource(drawable))
         } else {
             marker.setIcon(null) // reset to default icon
         }

@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 
 class Vehicle {
     var type: VehicleType? = null
-    var size: Size = Size()
+    var specifications: Specifications = Specifications()
     var description: String? = null
     var charge: Int = 0
     var location: LatLngDB = LatLngDB()
@@ -15,13 +15,13 @@ class Vehicle {
     constructor()
     constructor(
         type: VehicleType?,
-        size: Size,
+        specifications: Specifications,
         description: String?,
         charge: Int,
         location: LatLng
     ) {
         this.type = type
-        this.size = size
+        this.specifications = specifications
         this.description = description
         this.charge = charge
         this.location = LatLngDB(location.latitude, location.longitude)
@@ -69,7 +69,7 @@ class Vehicle {
     override fun hashCode(): Int {
         var result = type?.hashCode() ?: 0
         result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + (charge?.hashCode() ?: 0)
+        result = 31 * result + (charge.hashCode() ?: 0)
         result = 31 * result + location.hashCode()
         return result
     }

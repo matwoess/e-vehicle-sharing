@@ -47,6 +47,15 @@
             android:layout_below="@id/lbl_charge"
             android:padding="8dp"
             android:text="Location:" />
+
+        <TextView
+            android:id="@+id/lbl_specifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lbl_location"
+            android:padding="8dp"
+            android:text="Specifications" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -93,6 +102,17 @@
             android:layout_below="@id/txt_charge"
             android:padding="8dp"
             android:text="Eferdinger Straße"
+            android:textAlignment="textStart"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/txt_specifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_location"
+            android:padding="8dp"
+            android:text="{l: 1.0, w 1.0, h 1.0}, weight 1.0"
             android:textAlignment="textStart"
             android:textStyle="bold" />
     </RelativeLayout>
