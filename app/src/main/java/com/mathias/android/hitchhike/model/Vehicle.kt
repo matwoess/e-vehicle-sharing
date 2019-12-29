@@ -69,7 +69,7 @@ class Vehicle {
     override fun hashCode(): Int {
         var result = type?.hashCode() ?: 0
         result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + (charge.hashCode() ?: 0)
+        result = 31 * result + charge.hashCode()
         result = 31 * result + location.hashCode()
         return result
     }

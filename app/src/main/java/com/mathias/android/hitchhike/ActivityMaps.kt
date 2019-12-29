@@ -66,10 +66,10 @@ class ActivityMaps : AppCompatActivity(), OnMapReadyCallback {
         fireDBHelper.initFirebaseDB()
         mMap.uiSettings.isZoomControlsEnabled = true
         initLocation()
-        mMap.setOnMarkerClickListener { latLng -> handleMarkerClick(mMap, latLng) }
+        mMap.setOnMarkerClickListener { latLng -> handleMarkerClick(latLng) }
     }
 
-    private fun handleMarkerClick(mMap: GoogleMap, marker: Marker): Boolean {
+    private fun handleMarkerClick(marker: Marker): Boolean {
         showBottomSheet(markers[marker]!!)
         return true
     }

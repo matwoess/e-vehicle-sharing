@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -17,7 +15,6 @@ import com.mathias.android.hitchhike.ActivityMaps.Companion.geocoder
 import com.mathias.android.hitchhike.FireDBHelper.Companion.vehicles
 import com.mathias.android.hitchhike.R
 import com.mathias.android.hitchhike.model.Vehicle
-import java.text.DecimalFormat
 
 
 class BottomSheetInfo : BottomSheetDialogFragment() {
@@ -65,7 +62,6 @@ class BottomSheetInfo : BottomSheetDialogFragment() {
         txtDescription.text = vehicle.description
         txtCharge.text = String.format("%s%s", vehicle.charge.toString(), "%")
         val spec = vehicle.specifications
-        val df = DecimalFormat("#.##")
         txtSpecifications.text = String.format(
             "{l: %.2f, w: %.2f, h: %.2f}, weight: %.2f",
             spec.length,
