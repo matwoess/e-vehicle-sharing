@@ -1,49 +1,41 @@
-package com.mathias.android.carcass.model
+package com.mathias.android.hitchhike.model
 
 import com.google.android.gms.maps.model.LatLng
 
-class Carcass {
-    var type: AnimalType? = null
+class Vehicle {
+    var type: VehicleType? = null
+    var size: Size = Size()
     var description: String? = null
-    var reportedAt: Long? = null
+    var charge: Int = 0
     var location: LatLngDB = LatLngDB()
-    var url: String? = null
-    var flagged: Boolean = false
+    var rented: Boolean = false
+    var locked: Boolean = true
+    var alarm: Boolean = false
 
     constructor()
     constructor(
-        type: AnimalType?,
+        type: VehicleType?,
+        size: Size,
         description: String?,
-        reportedAt: Long?,
+        charge: Int,
         location: LatLng
     ) {
         this.type = type
+        this.size = size
         this.description = description
-        this.reportedAt = reportedAt
+        this.charge = charge
         this.location = LatLngDB(location.latitude, location.longitude)
     }
-
-    constructor(
-        type: AnimalType?,
-        description: String?,
-        reportedAt: Long?,
-        location: LatLng,
-        image: String?
-    ) : this(type, description, reportedAt, location) {
-        this.url = image
-    }
-
 
     fun latLng(): LatLng {
         return LatLng(location.lat, location.lng)
     }
 
-    fun updateValues(c: Carcass) {
+    fun updateValues(c: Vehicle) {
         this.type = c.type
         this.location = c.location
         this.description = c.description
-        this.reportedAt = c.reportedAt
-        this.flagged = c.flagged
+        this.charge = c.charge
     }
 
     override fun toString(): String {
@@ -53,7 +45,7 @@ class Carcass {
             .append(", ")
             .append(description)
             .append(", ")
-            .append(reportedAt)
+            .append(charge)
             .append(", ")
             .append(location)
             .append("]")
@@ -64,11 +56,11 @@ class Carcass {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Carcass
+        other as Vehicle
 
         if (type != other.type) return false
         if (description != other.description) return false
-        if (reportedAt != other.reportedAt) return false
+        if (charge != other.charge) return false
         if (location != other.location) return false
 
         return true
@@ -77,7 +69,7 @@ class Carcass {
     override fun hashCode(): Int {
         var result = type?.hashCode() ?: 0
         result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + (reportedAt?.hashCode() ?: 0)
+        result = 31 * result + (charge?.hashCode() ?: 0)
         result = 31 * result + location.hashCode()
         return result
     }

@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "371753820555",
-    "firebase_url": "https://inspiring-team-257815.firebaseio.com",
-    "project_id": "inspiring-team-257815",
-    "storage_bucket": "inspiring-team-257815.appspot.com"
+    "project_number": "871017944877",
+    "firebase_url": "https://e-vehicle-sharing.firebaseio.com",
+    "project_id": "e-vehicle-sharing",
+    "storage_bucket": "e-vehicle-sharing.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:371753820555:android:c831ec82ffb46b76578f8e",
+        "mobilesdk_app_id": "1:871017944877:android:bd61a3b48740ab94bd25a4",
         "android_client_info": {
-          "package_name": "com.mathias.android.carcass"
+          "package_name": "com.mathias.android.hitchhike"
         }
       },
       "oauth_client": [
         {
-          "client_id": "371753820555-05405jm4ton5vop02s1vdqv1kf6n7d3c.apps.googleusercontent.com",
+          "client_id": "871017944877-dhfrede3otkcdn5l5l8il7i1bjc0ghfg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDtzbnO8A-U_S6lxmnpZiyIZvLzxvvxK-0"
+          "current_key": "AIzaSyDYglI8gPfefQ9S_yrJuKDiw02c96oFF1E"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "371753820555-05405jm4ton5vop02s1vdqv1kf6n7d3c.apps.googleusercontent.com",
+              "client_id": "871017944877-dhfrede3otkcdn5l5l8il7i1bjc0ghfg.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

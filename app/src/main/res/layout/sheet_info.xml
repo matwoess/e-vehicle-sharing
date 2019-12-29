@@ -33,18 +33,18 @@
             android:text="Description:" />
 
         <TextView
-            android:id="@+id/lbl_reported"
+            android:id="@+id/lbl_charge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/lbl_description"
             android:padding="8dp"
-            android:text="Reported at:" />
+            android:text="Charge:" />
 
         <TextView
             android:id="@+id/lbl_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lbl_reported"
+            android:layout_below="@id/lbl_charge"
             android:padding="8dp"
             android:text="Location:" />
     </RelativeLayout>
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="Hedgehog"
+            android:text="Car"
             android:textAlignment="textStart"
             android:textStyle="bold" />
 
@@ -72,17 +72,17 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txt_type"
             android:padding="8dp"
-            android:text="A squashed hedgehog next to ..."
+            android:text="An E-Car"
             android:textAlignment="textStart"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txt_reported"
+            android:id="@+id/txt_charge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/txt_description"
             android:padding="8dp"
-            android:text="02.11.2019 15:30:03"
+            android:text="57%"
             android:textAlignment="textStart"
             android:textStyle="bold" />
 
@@ -90,9 +90,9 @@
             android:id="@+id/txt_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txt_reported"
+            android:layout_below="@id/txt_charge"
             android:padding="8dp"
-            android:text="Eferdinger Str. 2, 4020 Linz, Austria"
+            android:text="Eferdinger Straße"
             android:textAlignment="textStart"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -107,33 +107,33 @@
         app:layout_constraintTop_toBottomOf="@id/grp_lbl">
 
         <Button
-            android:id="@+id/btn_show_picture"
+            android:id="@+id/btn_rent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Show picture" />
 
         <Button
-            android:id="@+id/btn_edit"
+            android:id="@+id/btn_unlock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_show_picture"
-            android:text="Edit" />
+            android:layout_below="@id/btn_rent"
+            android:text="Unlock" />
 
         <Button
-            android:id="@+id/btn_remove"
+            android:id="@+id/btn_lock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_show_picture"
+            android:layout_below="@id/btn_rent"
             android:layout_centerHorizontal="true"
-            android:text="Remove" />
+            android:text="Lock" />
 
         <Button
-            android:id="@+id/btn_report"
+            android:id="@+id/btn_alarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_show_picture"
+            android:layout_below="@id/btn_rent"
             android:layout_alignParentEnd="true"
-            android:text="Report" />
+            android:text="Alarm" />
     </RelativeLayout>
 
 

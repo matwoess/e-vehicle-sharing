@@ -1,7 +1,7 @@
-package com.mathias.android.carcass.model
+package com.mathias.android.hitchhike.model
 
 
-class AnimalType {
+class VehicleType {
     var name: String = ""
 
     constructor() {}
@@ -9,8 +9,8 @@ class AnimalType {
         this.name = name
     }
 
-    fun updateValues(at: AnimalType) {
-        this.name = at.name
+    fun updateValues(vt: VehicleType) {
+        this.name = vt.name
     }
 
     override fun toString(): String {

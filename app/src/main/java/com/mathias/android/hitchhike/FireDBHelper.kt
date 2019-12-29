@@ -1,6 +1,5 @@
-package com.mathias.android.carcass
+package com.mathias.android.hitchhike
 
-import android.net.Uri
 import android.util.Log
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -8,90 +7,61 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.database.*
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.mathias.android.carcass.model.AnimalType
-import com.mathias.android.carcass.model.Carcass
+import com.mathias.android.hitchhike.model.Size
+import com.mathias.android.hitchhike.model.VehicleType
+import com.mathias.android.hitchhike.model.Vehicle
 import java.util.*
 import kotlin.collections.HashMap
 
 class FireDBHelper(map: GoogleMap) {
-    private lateinit var mDBCarcassRef: DatabaseReference
-    private lateinit var mDBAnimalTypeRef: DatabaseReference
-    private lateinit var mDBStorage: FirebaseStorage
-    private lateinit var mDBStorageRef: StorageReference
+    private lateinit var mDBVehiclesRef: DatabaseReference
+    private lateinit var mDBVehicleTypesRef: DatabaseReference
     private val mMap: GoogleMap = map
 
     fun initFirebaseDB() {
         Log.i(TAG, "initialize Firebase DB")
-        mDBAnimalTypeRef = FirebaseDatabase.getInstance().reference.child("animalTypes")
-        mDBCarcassRef = FirebaseDatabase.getInstance().reference.child("carcasses")
-        mDBStorage = FirebaseStorage.getInstance()
-        mDBStorageRef = mDBStorage.reference.child("images")
-        mDBAnimalTypeRef.addChildEventListener(AnimalTypeListener())
-        mDBCarcassRef.addChildEventListener(CarcassListener())
+        mDBVehicleTypesRef = FirebaseDatabase.getInstance().reference.child("vehicleTypes")
+        mDBVehiclesRef = FirebaseDatabase.getInstance().reference.child("vehicles")
+        mDBVehicleTypesRef.addChildEventListener(VehicleTypeListener())
+        mDBVehiclesRef.addChildEventListener(VehicleListener())
     }
 
-    fun pushCarcass(carcass: Carcass, uri: Uri?): String {
-        val ref = mDBCarcassRef.push()
-        ref.setValue(carcass)
-        val key = ref.key!!
-        if (uri != null) storeImage(key, uri)
-        return key
-    }
-
-    fun storeImage(key: String, image: Uri) {
-        Log.i(TAG, "carcass has image, uploading to storage")
-        mDBStorageRef.child(key).child(image.lastPathSegment!!).putFile(image)
-            .addOnSuccessListener { t ->
-                t.task.result.metadata!!.reference!!.downloadUrl
-                    .addOnSuccessListener { r ->
-                        carcasses[key]!!.url = r.toString()
-                        updateCarcass(key, carcasses[key]!!)
-                    }
-            }
-    }
-
-    fun updateCarcass(key: String, carcass: Carcass): String {
-        val ref = mDBCarcassRef.child(key)
-        ref.setValue(carcass)
+    fun pushVehicle(vehicle: Vehicle): String {
+        val ref = mDBVehiclesRef.push()
+        ref.setValue(vehicle)
         return ref.key!!
     }
 
-    fun removeCarcass(carcass: Carcass): Boolean {
-        val entry = carcasses.entries.stream()
-            .filter { e -> e.value == carcass }
+    fun updateVehicle(key: String, vehicle: Vehicle): String {
+        val ref = mDBVehiclesRef.child(key)
+        ref.setValue(vehicle)
+        return ref.key!!
+    }
+
+    fun removeVehicle(vehicle: Vehicle): Boolean {
+        val entry = vehicles.entries.stream()
+            .filter { e -> e.value == vehicle }
             .findFirst()
             .orElse(null)
             ?: return false
-        if (carcass.url != null) deleteImage(entry.key)
-        return mDBCarcassRef.child(entry.key).removeValue().isSuccessful
+        return mDBVehiclesRef.child(entry.key).removeValue().isSuccessful
     }
 
-    fun deleteImage(key: String): Boolean {
-        Log.d(TAG, "delete image at images/$key")
-        val c = carcasses[key]!!
-        if (c.url == null) return false
-        val imgRef = mDBStorage.getReferenceFromUrl(c.url!!)
-        Log.d(TAG, "imgRef: $imgRef")
-        return imgRef.delete().isSuccessful
-    }
-
-    fun addAnimalType(animalType: AnimalType): String {
-        val ref = mDBAnimalTypeRef.push()
-        ref.setValue(animalType)
+    fun addVehicleType(vehicleType: VehicleType): String {
+        val ref = mDBVehicleTypesRef.push()
+        ref.setValue(vehicleType)
         return ref.key!!
     }
 
     fun addMarker(
         ref: String,
-        carcass: Carcass
+        vehicle: Vehicle
     ): Marker {
         val marker =
-            mMap.addMarker(MarkerOptions().position(carcass.latLng()).title(carcass.type!!.name))
+            mMap.addMarker(MarkerOptions().position(vehicle.latLng()).title(vehicle.type!!.name))
         marker.tag = ref
         markers[marker] = ref
-        if (carcass.flagged) {
+        if (vehicle.rented) {
             marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_dot))
         }
         return marker
@@ -108,10 +78,11 @@ class FireDBHelper(map: GoogleMap) {
 
     fun insertDemoData(userPos: LatLng) {
         Log.i(TAG, "insertDemoData")
+
         val rand = Random()
         val scale = 1 / 80.0
         for (i in 1..2) {
-            for (j in 1..4) {
+            for (j in 1..3) {
                 var addLat = rand.nextDouble() * scale
                 var addLng = rand.nextDouble() * scale
                 if (i % 2 == 0) addLat *= -1
@@ -120,14 +91,15 @@ class FireDBHelper(map: GoogleMap) {
                     userPos.latitude + addLat,
                     userPos.longitude + addLng
                 )
-                val type = animalTypes.values.elementAt(j - 1)
-                val c = Carcass(type, "a dead ${type.name}", Date().time, loc)
-                val ref = pushCarcass(c, null) // TODO
+                val type = vehicleTypes.values.elementAt(j - 1)
+                val size = Size(1.0f, 1.0f, 1.0f)
+                val v = Vehicle(type, size, "an ${type.name}", rand.nextInt(100), loc)
+                val ref = pushVehicle(v)
             }
         }
     }
 
-    inner class AnimalTypeListener : ChildEventListener {
+    inner class VehicleTypeListener : ChildEventListener {
 
         override fun onCancelled(error: DatabaseError) {
             Log.w("Failed to read value.", error.toException())
@@ -139,32 +111,32 @@ class FireDBHelper(map: GoogleMap) {
 
         override fun onChildChanged(snapshot: DataSnapshot, prevChild: String?) {
             Log.d(TAG, "onChildChanged: $snapshot, $prevChild")
-            if (animalTypes.containsKey(snapshot.key)) {
+            if (vehicleTypes.containsKey(snapshot.key)) {
                 Log.i(TAG, "update entry")
-                val c = snapshot.getValue(AnimalType::class.java)!!
-                animalTypes[snapshot.key!!]?.updateValues(c)
+                val c = snapshot.getValue(VehicleType::class.java)!!
+                vehicleTypes[snapshot.key!!]?.updateValues(c)
             }
         }
 
         override fun onChildAdded(snapshot: DataSnapshot, prevChild: String?) {
             Log.d(TAG, "onChildAdded: $snapshot, $prevChild")
-            if (!animalTypes.containsKey(snapshot.key)) {
+            if (!vehicleTypes.containsKey(snapshot.key)) {
                 Log.i(TAG, "add new entry")
-                val c = snapshot.getValue(AnimalType::class.java)!!
-                animalTypes[snapshot.key!!] = c
+                val c = snapshot.getValue(VehicleType::class.java)!!
+                vehicleTypes[snapshot.key!!] = c
             }
         }
 
         override fun onChildRemoved(snapshot: DataSnapshot) {
             Log.d(TAG, "onChildRemoved: $snapshot")
-            if (animalTypes.containsKey(snapshot.key)) {
+            if (vehicleTypes.containsKey(snapshot.key)) {
                 Log.i(TAG, "remove entry")
-                animalTypes.remove(snapshot.key)
+                vehicleTypes.remove(snapshot.key)
             }
         }
     }
 
-    inner class CarcassListener : ChildEventListener {
+    inner class VehicleListener : ChildEventListener {
 
         override fun onCancelled(error: DatabaseError) {
             Log.w("Failed to read value.", error.toException())
@@ -176,30 +148,30 @@ class FireDBHelper(map: GoogleMap) {
 
         override fun onChildChanged(snapshot: DataSnapshot, prevChild: String?) {
             Log.d(TAG, "onChildChanged: $snapshot, $prevChild")
-            if (carcasses.containsKey(snapshot.key)) {
+            if (vehicles.containsKey(snapshot.key)) {
                 Log.i(TAG, "update entry")
-                val c = snapshot.getValue(Carcass::class.java)!!
-                carcasses[snapshot.key!!]!!.updateValues(c)
+                val c = snapshot.getValue(Vehicle::class.java)!!
+                vehicles[snapshot.key!!]!!.updateValues(c)
                 updateMarker(snapshot.key!!)
             }
         }
 
         override fun onChildAdded(snapshot: DataSnapshot, prevChild: String?) {
             Log.d(TAG, "onChildAdded: $snapshot, $prevChild")
-            if (!carcasses.containsKey(snapshot.key)) {
+            if (!vehicles.containsKey(snapshot.key)) {
                 Log.i(TAG, "add new entry")
-                val c = snapshot.getValue(Carcass::class.java)!!
-                carcasses[snapshot.key!!] = c
+                val c = snapshot.getValue(Vehicle::class.java)!!
+                vehicles[snapshot.key!!] = c
                 addMarker(snapshot.key!!, c)
             }
         }
 
         override fun onChildRemoved(snapshot: DataSnapshot) {
             Log.d(TAG, "onChildRemoved: $snapshot")
-            if (carcasses.containsKey(snapshot.key)) {
+            if (vehicles.containsKey(snapshot.key)) {
                 Log.i(TAG, "remove entry")
-                val c = snapshot.getValue(Carcass::class.java)!!
-                carcasses.remove(snapshot.key)
+                val c = snapshot.getValue(Vehicle::class.java)!!
+                vehicles.remove(snapshot.key)
                 removeMarker(snapshot.key!!)
             }
         }
@@ -212,8 +184,8 @@ class FireDBHelper(map: GoogleMap) {
             .findFirst()
             .orElse(null)
             ?: return
-        Log.i(TAG, "flagged = ${carcasses[key]!!.flagged}")
-        if (carcasses[key]!!.flagged) {
+        Log.i(TAG, "rented = ${vehicles[key]!!.rented}")
+        if (vehicles[key]!!.rented) {
             marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.yellow_dot))
         } else {
             marker.setIcon(null) // reset to default icon
@@ -222,9 +194,9 @@ class FireDBHelper(map: GoogleMap) {
 
     companion object {
         private const val TAG = "FireDBHelper"
-        var carcasses: HashMap<String, Carcass> = HashMap()
+        var vehicles: HashMap<String, Vehicle> = HashMap()
         var markers: HashMap<Marker, String> = HashMap()
-        var animalTypes: HashMap<String, AnimalType> = HashMap()
+        var vehicleTypes: HashMap<String, VehicleType> = HashMap()
     }
 
 }

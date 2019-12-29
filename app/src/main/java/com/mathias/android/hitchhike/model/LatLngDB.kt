@@ -1,4 +1,4 @@
-package com.mathias.android.carcass.model
+package com.mathias.android.hitchhike.model
 
 class LatLngDB {
     var lat: Double = .0
