@@ -133,6 +133,17 @@ class ActivityMaps : AppCompatActivity(), OnMapReadyCallback, IRentVehicle {
         return true
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_PERM_LOCATION -> initLocation()
+        }
+    }
+
     private fun showBottomSheet(key: String) {
         val sheet = BottomSheetInfo().newInstance(key, this)
         sheet.show(this.supportFragmentManager, "Vehicle Info")
